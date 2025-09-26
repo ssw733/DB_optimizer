@@ -6,12 +6,12 @@ Install:
 composer i
 ```
 
-Generate mock:
+Generate mock-data:
 ```bash
 php artisan db:seed
 ```
 
-Migration to S3:
+Start migration to S3:
 ```bash
 php artisan emails:migrate-to-s3
 ```
