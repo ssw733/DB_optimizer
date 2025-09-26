@@ -2,10 +2,16 @@
 Test task of migration some fields to S3
 
 Install:
-$ docker compose up
+```bash
+docker compose up
+```
 
 Generate mock:
-$ php artisan db:seed
+```bash
+php artisan db:seed
+```
 
 Migration to S3:
-$ php artisan emails:migrate-to-s3
+```bash
+php artisan emails:migrate-to-s3
+```
