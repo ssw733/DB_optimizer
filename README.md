@@ -1,10 +1,11 @@
-## Database to S3 migrator
+# DB_optimizer
+Test task of migration some fields to S3
 
-Установка:
+Install:
 $ docker compose up
 
-Генерация синтетических данных:
+Generate mock:
 $ php artisan db:seed
 
-Миграция в S3:
+Migration to S3:
 $ php artisan emails:migrate-to-s3
