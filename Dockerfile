@@ -2,15 +2,17 @@ FROM php:8.4-fpm
 
 WORKDIR /var/www/html
 
-RUN apt update && apt install -y libpq-dev
+RUN apt update && apt install -y \
+    libpq-dev \
+    git
 
 RUN docker-php-ext-install pdo pdo_pgsql pgsql
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-COPY . /var/www/html
 
-RUN composer install 
-#--no-dev --optimize-autoloader
+RUN git clone https://github.com/ssw733/DB_optimizer.git && \
+    cd DB_optimizer && \
+    composer i 
 
 EXPOSE 9000
 

@@ -26,6 +26,13 @@ class OffloadTable extends Command
      */
     public function handle()
     {
-        //DB::table('emails')
+        $emails = DB::table('emails')
+        ->leftJoin('emails_s3_content', 'emails.id', '=', 'emails_s3_content.email_id')
+        ->whereNull('emails_s3_content.id')
+        ->limit(env('S3_EMAILS_BATCH_SIZE'))->get();
+
+        foreach($emails as $email) {
+            print_r($email);
+        }
     }
 }
