@@ -30,7 +30,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('path');
             $table->integer('size')->default(0);
-            $table->char('type', 1);
+            $table->string('type', 5);
         });
     }
 

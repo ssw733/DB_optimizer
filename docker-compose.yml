@@ -15,7 +15,8 @@ services:
       - DB_DATABASE=large_db
       - DB_USERNAME=admin
       - DB_PASSWORD=admin
-      - SEEDER_BATCH_SIZE=100000
+      - SEEDER_BATCH_SIZE=1000
+      - S3_EMAILS_BATCH_SIZE=10
     depends_on:
       - db
   nginx:
