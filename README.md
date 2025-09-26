@@ -3,7 +3,7 @@ Test task of migration some fields to S3
 
 Install:
 ```bash
-docker compose up
+composer i
 ```
 
 Generate mock:
