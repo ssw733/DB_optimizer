@@ -6,7 +6,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: large_db
+    container_name: DB_optimizer
     restart: unless-stopped
     environment:
       - DB_CONNECTION=pgsql
@@ -17,6 +17,10 @@ services:
       - DB_PASSWORD=admin
       - SEEDER_BATCH_SIZE=1000
       - S3_EMAILS_BATCH_SIZE=10
+      - MINIO_ENDPOINT=127.0.0.1:9000
+        #MINIO_ACCESS_KEY=your_access_key
+        #MINIO_SECRET_KEY=your_secret_key
+        #MINIO_BUCKET=s3_bucket
     depends_on:
       - db
   nginx:
@@ -46,18 +50,21 @@ services:
     depends_on:
       - db
   minio:
-    image: quay.io/minio/minio:latest
+    image: minio/minio:latest
     ports:
-      - "9000:9000" # API port
-      - "9001:9001" # Console port
+      - "9000:9000" # MinIO API port
+      - "9001:9001" # MinIO Console port
     volumes:
-      - ./minio_data:/data # Mount host directory for persistent data
+      - minio_data:/data # Persistent storage for MinIO data
     environment:
-      MINIO_ROOT_USER: "admin" # Replace with a strong username
-      MINIO_ROOT_PASSWORD: "admin" # Replace with a strong password
+      MINIO_ROOT_USER: admin # Root access key
+      MINIO_ROOT_PASSWORD: admin # Root secret key
+      MINIO_DEFAULT_BUCKETS: s3_bicket # Optional: create a default bucket on startup
     command: server /data --console-address ":9001"
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 30s
       timeout: 20s
       retries: 3
+  volumes:
+    minio_data:
