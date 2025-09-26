@@ -1,0 +1,62 @@
+version: '3.8' # Specify the Docker Compose file format version
+
+services:
+  # Laravel Application (PHP-FPM)
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: large_db
+    restart: unless-stopped
+    environment:
+      - DB_CONNECTION=pgsql
+      - DB_HOST=127.0.0.1
+      - DB_PORT=5431
+      - DB_DATABASE=large_db
+      - DB_USERNAME=admin
+      - DB_PASSWORD=admin
+      - SEEDER_BATCH_SIZE=100000
+    depends_on:
+      - db
+  nginx:
+    image: nginx
+    volumes:
+      - ./templates:/etc/nginx/templates
+    ports:
+      - "8080:80"
+    environment:
+      - NGINX_HOST=test_task.io
+      - NGINX_PORT=80
+  db:
+    image: postgres
+    restart: always
+    #shm_size: 256mb
+    environment:
+      POSTGRES_DB: large_db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5431:5432"
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8081:8080
+    depends_on:
+      - db
+  minio:
+    image: quay.io/minio/minio:latest
+    ports:
+      - "9000:9000" # API port
+      - "9001:9001" # Console port
+    volumes:
+      - ./minio_data:/data # Mount host directory for persistent data
+    environment:
+      MINIO_ROOT_USER: "admin" # Replace with a strong username
+      MINIO_ROOT_PASSWORD: "admin" # Replace with a strong password
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      interval: 30s
+      timeout: 20s
+      retries: 3
