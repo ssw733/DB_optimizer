@@ -13,17 +13,13 @@ return new class extends Migration
     {
         Schema::table('emails', function (Blueprint $table) {
             //Новое поле body_s3_path
-            $table->string('body_s3_path');
+            $table->string('body_s3_path')->nullable();
         });
 
-        Schema::create('emails_s3_files', function (Blueprint $table) {
-            $table->id();
-            $table->bigInteger('email_id');
-            $table->index('email_id');
-            //Возможно каскадное удаление через таблицу emails здесь будет уместно
-            //$table->foreign('email_id')->references('id')->on('emails')->onDelete('cascade');
-            $table->string('path');
-            $table->char('type', 5);
+        Schema::table('files', function (Blueprint $table) {
+            //Новое поле body_s3_path
+            $table->integer('email_id')->nullable();
+            $table->integer('s3_path')->nullable();
         });
     }
 
