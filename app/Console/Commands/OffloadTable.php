@@ -47,7 +47,8 @@ class OffloadTable extends Command
                     Storage::disk('s3')->put($f->name . '.' . $f->type, Storage::disk('local')->get($f->path));
                 }
             }
-            DB::table('emails')->where()->update($toUpdateEmails);
+            //DB::table('emails')->where()->update($toUpdateEmails);
+            //Логика обновления инфо в БД ещё не реализована
             $progress = DB::table('emails')->whereNull('body_s3_path')->count();
             echo 'Added another ' . env('S3_EMAILS_BATCH_SIZE') . ' emails to S3, left ' . $progress . PHP_EOL;
         }
